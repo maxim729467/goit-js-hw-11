@@ -31,9 +31,11 @@ async function onFormSubmit(e) {
   loader.style.display = 'block';
   apiService.query = value;
   const photos = await apiService.getPhotos();
-  gallery.insertAdjacentHTML('beforeend', photosMarkup({ photos }));
+  if (photos.length) {
+    gallery.insertAdjacentHTML('beforeend', photosMarkup({ photos }));
+    lightbox = new SimpleLightbox('.gallery a', options);
+  }
   loader.style.display = 'none';
-  lightbox = new SimpleLightbox('.gallery a', options);
 }
 
 window.addEventListener('scroll', throttle(onScrollHandler, 1000));
@@ -43,10 +45,12 @@ async function onScrollHandler() {
 
   loader.style.display = 'block';
   const photos = await apiService.loadMorePhotos();
-  gallery.insertAdjacentHTML('beforeend', photosMarkup({ photos }));
+  if (photos.length) {
+    gallery.insertAdjacentHTML('beforeend', photosMarkup({ photos }));
+    lightbox.refresh();
+    scrollSmootly();
+  }
   loader.style.display = 'none';
-  lightbox.refresh();
-  scrollSmootly();
 }
 
 function getDocumentHeight() {
