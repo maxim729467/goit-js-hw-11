@@ -9,11 +9,9 @@ const gallery = document.querySelector('.gallery');
 const loader = document.querySelector('.loader-wrapper');
 const apiService = new ApiService();
 
-let lightbox = null;
-let observer = null;
 let observerTarget = null;
 
-const options = {
+const lightboxOptions = {
   captions: true,
   captionsData: 'alt',
   captionDelay: 250,
@@ -21,6 +19,13 @@ const options = {
   animationSpeed: 150,
   fadeSpeed: 200,
 };
+
+const observer = new IntersectionObserver(entries => {
+  if (entries[0].intersectionRatio <= 0) return;
+  onScrollHandler();
+});
+
+const lightbox = new SimpleLightbox('.gallery a', lightboxOptions);
 
 form.addEventListener('submit', onFormSubmit);
 
@@ -39,14 +44,8 @@ async function onFormSubmit(e) {
   if (!photos.length) return;
 
   gallery.insertAdjacentHTML('beforeend', photosMarkup({ photos }));
-  lightbox = new SimpleLightbox('.gallery a', options);
+  lightbox.refresh();
   observerTarget = gallery.lastElementChild;
-
-  observer = new IntersectionObserver(entries => {
-    if (entries[0].intersectionRatio <= 0) return;
-    onScrollHandler();
-  });
-
   observer.observe(observerTarget);
 }
 
