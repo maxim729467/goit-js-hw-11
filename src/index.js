@@ -42,27 +42,18 @@ async function onFormSubmit(e) {
   loader.style.display = 'none';
 
   if (!photos.length) return;
-
-  gallery.insertAdjacentHTML('beforeend', photosMarkup({ photos }));
-  lightbox.refresh();
-  observerTarget = gallery.lastElementChild;
-  observer.observe(observerTarget);
+  updateGallery(photos);
 }
 
 async function onScrollHandler() {
   observer.unobserve(observerTarget);
   loader.style.display = 'block';
   const photos = await apiService.loadMorePhotos();
-
-  if (photos.length) {
-    gallery.insertAdjacentHTML('beforeend', photosMarkup({ photos }));
-    lightbox.refresh();
-    observerTarget = gallery.lastElementChild;
-    observer.observe(observerTarget);
-    scrollSmootly();
-  }
-
   loader.style.display = 'none';
+
+  if (!photos.length) return;
+  updateGallery(photos);
+  scrollSmootly();
 }
 
 function scrollSmootly() {
@@ -73,4 +64,11 @@ function scrollSmootly() {
     top: cardHeight * 2,
     behavior: 'smooth',
   });
+}
+
+function updateGallery(photos) {
+  gallery.insertAdjacentHTML('beforeend', photosMarkup({ photos }));
+  lightbox.refresh();
+  observerTarget = gallery.lastElementChild;
+  observer.observe(observerTarget);
 }
