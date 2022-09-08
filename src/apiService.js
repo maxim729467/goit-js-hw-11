@@ -9,7 +9,7 @@ const DEFAULT_PARAMS = {
   per_page: 40,
 };
 
-axios.defaults.baseURL = 'https://pixabay.com';
+axios.defaults.baseURL = 'https://pixabay.com/';
 
 class ApiService {
   constructor() {
@@ -45,7 +45,7 @@ class ApiService {
 
   async fetch() {
     try {
-      const res = await axios.get('/api/', {
+      const res = await axios.get('api/', {
         params: {
           ...DEFAULT_PARAMS,
           page: this.searchPage,
